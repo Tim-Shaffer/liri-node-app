@@ -4,7 +4,8 @@
 // node liri.js movie-this Frozen
 // node liri.js movie-this Charlie and the chocolate factory
 // 
-// node liri.js concert-this <artist/band name here>
+// node liri.js concert-this Adele
+// node liri.js concert-this Paul McCartney
 // 
 // node liri.js spotify-this-song '<song name here>'
 // 
@@ -92,16 +93,48 @@ function performAction(action, target) {
 function concertThis(artist = "Celine Dion") {
 
     // Bonus -- log to a logfile
-    logCommands("Concert Search:", artist);
+    // logCommands("Concert Search:", artist);
 
-// concert-this
-// 
-// This will search the Bands in Town Artist Events API 
-// ("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp") 
-// for an artist and render the following information about each event to the terminal:
-// Name of the venue
-// Venue location
-// Date of the Event (use moment to format this as "MM/DD/YYYY")
+    // log the result header
+    console.log("Upcoming concerts for " + artist + ":");
+
+    // bulid the artist parameter for search based on the user input passed into the function
+    // according to the API website, the words in an Artist Name must be separated by "%20" instead of spaces
+    artist = artist.replace(" ", "%20");
+
+    // build the OMDB API quey with the movie specified  (Activity 17-OMDB-Axios)
+    var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+
+    // establish variables for further processing
+    var venue;
+    var location;
+    var eventDT;
+    var event = [];
+
+    // create a request with axios to the queryUrl
+    axios.get(queryUrl)
+        
+    // If the request with axios is successful
+    .then( function(response) {
+        // console.log(response.data);
+
+        event = response.data;
+
+        for (let i=0; i < event.length; i++) {
+            // Name of the venue
+            venue = event[i].venue.name;
+            // Venue location
+            location = event[i].venue.city + ", " + response.data[i].venue.country;
+            // Date of the Event (use moment to format this as "MM/DD/YYYY")
+            eventDT = event[i].datetime;
+
+            console.log(location + " at " + venue + " " + eventDT);
+        }
+    })
+    // If the request with axios is unsuccessful
+    .catch(function(error) {
+        console.log("Error in call to OMDB:  " + error);
+    });
 
 };
 
