@@ -23,7 +23,11 @@ var inputString = process.argv;
 
 // Parses the command line arguments to capture the first argument
 var action = inputString[2];
-var target = inputString[3]; 
+
+// allow for multi-word inputs (Activity 23-GeocoeNPM)
+// take the inputstring from index 3 to the en and create a new array using the slice() method
+// take that resulting array and join it back as a string with a " " separating the words
+var target = inputString.slice(3).join(" "); 
 
 // perform an action based on what action was requested
 switch(action) {
