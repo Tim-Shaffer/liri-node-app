@@ -4,6 +4,12 @@
 // node liri.js movie-this Frozen
 // node liri.js movie-this Charlie and the chocolate factory
 // 
+// node liri.js concert-this <artist/band name here>
+// 
+// node liri.js spotify-this-song '<song name here>'
+// 
+// node liri.js do-what-it-says
+// 
 // --------------------------------------------------------------------------------------
 
 // code to read and set any environment variables with the dotenv package 
@@ -30,33 +36,58 @@ var action = inputString[2];
 var target = inputString.slice(3).join(" "); 
 
 // file name variable
-var logfile = 'log.txt'
+var logfile = 'log.txt';
+var randomFile = 'random.txt';
 
 // grab the fs package to handle read and append of the files
 var fs = require("fs");
 
-// perform an action based on what action was requested
-switch(action) {
-    case "concert-this":
-        concertThis(target);
-        break;
-    
-    case "spotify-this-song":
-        spotifyThis(target);
-        break;
+// call the performAction() function if arguments were passed - always since arguments inclued "node" and "liri.js"
+if (action && target) {
+    performAction(action, target);
+} else if (action) {
+    performAction(action);
+} else if (inputString) {
+    performAction();
+} ;
 
-    case "movie-this":
-        movieThis(target);
-        break;
+// --------------------------------------------------------------------------------------
+// function to perform an action based on what was requested
+// 
+//  Parameter values:
+// 
+//  action - the action to perform
+//  target - what to perform the action on
+// 
+// --------------------------------------------------------------------------------------
+function performAction(action, target) {
 
-    case "do-what-it-says":
-        readRandom(randomFile)
-        break;
+    switch(action) {
+        case "concert-this":
+            concertThis(target);
+            break;
+        
+        case "spotify-this-song":
+            spotifyThis(target);
+            break;
 
-    default:
-        console.log('No Action To Take!');
-        break;
+        case "movie-this":
+            movieThis(target);
+            break;
+
+        case "do-what-it-says":
+            readRandom(randomFile)
+            break;
+
+        default:
+            console.log('No Action To Take!');
+            break;
+    };
+
 };
+// --------------------------------------------------------------------------------------
+//  end of performAction() function 
+// --------------------------------------------------------------------------------------
 
 function concertThis(artist = "Celine Dion") {
 
@@ -64,7 +95,6 @@ function concertThis(artist = "Celine Dion") {
     logCommands("Concert Search:", artist);
 
 // concert-this
-// node liri.js concert-this <artist/band name here>
 // 
 // This will search the Bands in Town Artist Events API 
 // ("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp") 
@@ -80,8 +110,6 @@ function spotifyThis(song = "The Sign") {
     // Bonus -- log to a logfile
     logCommands("Song Search:", song);
 
-// spotify-this-song
-// node liri.js spotify-this-song '<song name here>'
 // 
 // This will show the following information about the song in your terminal/bash window
 // Artist(s)
@@ -111,7 +139,7 @@ function movieThis(movie = "Mr. Nobody") {
     movie = movie.replace(" ", "+");
 
     // build the OMDB API quey with the movie specified  (Activity 17-OMDB-Axios)
-    var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&type=movie&plot=short&apikey=trilogy";
+    var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&plot=short&apikey=trilogy";
 
     // create a request with axios to the queryUrl
     axios.get(queryUrl)
@@ -146,17 +174,42 @@ function movieThis(movie = "Mr. Nobody") {
 //  end of movieThis() function 
 // --------------------------------------------------------------------------------------
 
+// --------------------------------------------------------------------------------------
+//  function to read a file and 'do-what-it-says' to do 
+//  (Activity 12-ReadFile)
+// --------------------------------------------------------------------------------------
 function readRandom(fname) {
 
     // Bonus -- log to a logfile
     logCommands("Do what it says!");
-
-// do-what-it-says
-// node liri.js do-what-it-says
-// 
 // Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
 
+    // read the random file and store the contents in "data"
+    fs.readFile(randomFile, "utf8", function(error, data) {
+
+    // If the code experiences any errors it will log the error to the console.
+    if (error) {
+      return console.log(error);
+    }
+  
+    // We will then print the contents of data
+    console.log(data);
+  
+    // Then split it by commas (to make it more readable)  - separates values at the comma
+    var dataArr = data.split(",");
+  
+    // We will then re-display the content as an array for later use.
+    console.log(dataArr);
+
+    //  perform the action requested by the file
+    performAction(dataArr[0], dataArr[1])
+  
+  });
+
 };
+// --------------------------------------------------------------------------------------
+//  end of readRandom() function 
+// --------------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------------
 //  function to sort through the Ratings Array returned by OMDB to get a specific one
@@ -193,6 +246,7 @@ function findRatings(array, key='Source', value='Rotten Tomatoes') {
 // --------------------------------------------------------------------------------------
 // Bonus *****
 //  function to log a message to a logfile to keep track of the activities 
+//  (Activity 14-AppendFile)
 // --------------------------------------------------------------------------------------
 function logCommands(funcPerformed, target) {
 
