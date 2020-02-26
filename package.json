@@ -15,7 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
-    "node-spotify-api": "^1.1.1"
+    "node-spotify-api": "^1.1.1",
+    "moment": "^2.24.0"
   },
   "bugs": {
     "url": "https://github.com/Tim-Shaffer/liri-node-app/issues"
