@@ -128,9 +128,6 @@ function performAction(action, target) {
 // --------------------------------------------------------------------------------------
 function concertThis(artist = "Celine Dion") {
 
-    // Bonus -- log to a logfile
-    logCommands("Concert Search:", artist);
-
     // bulid the artist parameter for search based on the user input passed into the function
     // according to the API website, the words in an Artist Name must be separated by "%20" instead of spaces
     var artistSrch = artist.replace(" ", "%20");
@@ -179,6 +176,9 @@ function concertThis(artist = "Celine Dion") {
                 console.log(location + " at " + venue + " on " + eventDT);
 
             };
+     
+            // Bonus -- log to a logfile
+            logCommands("Concert Search:", artist);
 
         } else {
 
@@ -202,9 +202,6 @@ function concertThis(artist = "Celine Dion") {
 // --------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------
 function spotifyThis(song = "The Sign") {
-
-    // Bonus -- log to a logfile
-    logCommands("Song Search:", song);
 
     // local variables to make gathering the data easier
     var track = [];
@@ -266,6 +263,9 @@ function spotifyThis(song = "The Sign") {
 
             };
 
+            // Bonus -- log to a logfile 
+            logCommands("Song Search:", song);
+
         } else {
 
             // log the result header
@@ -289,16 +289,13 @@ function spotifyThis(song = "The Sign") {
 // 
 // --------------------------------------------------------------------------------------
 function movieThis(movie = "Mr. Nobody") {
-
-    // Bonus -- log to a logfile
-    logCommands("Movie Search:", movie);
     
     // bulid the movie parameter for search based on the user input passed into the function
     // according to the API website, the words in a Movie Title must be separated by "+" instead of spaces
-    movie = movie.replace(" ", "+");
+    var movieSrch = movie.replace(" ", "+");
 
     // build the OMDB API quey with the movie specified  (Activity 17-OMDB-Axios)
-    var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&plot=short&apikey=trilogy";
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieSrch + "&plot=short&apikey=trilogy";
 
     // create a request with axios to the queryUrl
     axios.get(queryUrl)
@@ -331,6 +328,9 @@ function movieThis(movie = "Mr. Nobody") {
         // Actors in the movie.
         console.log("Actors:  " + response.data.Actors);
 
+        // Bonus -- log to a logfile
+        logCommands("Movie Search:", movie);
+
     })
 
     // If the request with axios is unsuccessful
@@ -351,9 +351,6 @@ function movieThis(movie = "Mr. Nobody") {
 // --------------------------------------------------------------------------------------
 function readRandom(fname) {
 
-    // Bonus -- log to a logfile
-    logCommands("Do what it says!");
-
     // read the random file and store the contents in "data"
     fs.readFile(randomFile, "utf8", function(error, data) {
 
@@ -366,6 +363,9 @@ function readRandom(fname) {
   
     // Then split it by commas (to make it more readable)  - separates values at the comma
     var dataArr = data.split(",");
+
+    // Bonus -- log to a logfile
+    logCommands("Do what it says!");
 
     //  perform the action requested by the file
     performAction(dataArr[0], capital_letter(dataArr[1]));
@@ -427,7 +427,7 @@ function capital_letter(str) {
 
     // return the capitalize string put back together with the 'space' separator.
     return str.join(" ");
-    
+
 };
 // --------------------------------------------------------------------------------------
 // end of the capital_letter() function
