@@ -1,11 +1,22 @@
+// --------------------------------------------------------------------------------------
+//  Testing parameters
+// 
+// node liri.js movie-this Frozen
+// node liri.js movie-this Avengers Endgame
+// 
+// --------------------------------------------------------------------------------------
+
 // code to read and set any environment variables with the dotenv package 
-require("dotenv").config();
+// require("dotenv").config();
 
 // code required to import the keys.js file and store it in a variable 
-var keys = require("./keys.js");
+// var keys = require("./keys.js");
+
+// Grab the axios package...
+var axios = require("axios");
 
 // access Spotify keys information
-var spotify = new Spotify(keys.spotify);
+// var spotify = new Spotify(keys.spotify);
 
 // Takes in all of the command line arguments
 var inputString = process.argv;
@@ -64,22 +75,53 @@ function spotifyThis(song = "The Sign") {
 
 };
 
+// --------------------------------------------------------------------------------------
+//  function to build and perform the API call to OMDB for a given movie 
+// 
+//  Parameter values:
+// 
+//  movie - the movie as provided (default = "Mr. Nobody")
+// 
+// --------------------------------------------------------------------------------------
 function movieThis(movie = "Mr. Nobody") {
-// movie-this
-// node liri.js movie-this '<movie name here>'
-// 
-// Title of the movie.
-// Year the movie came out.
-// IMDB Rating of the movie
-// Rotten Tomatoes Rating of the movie.
-// Country where the movie was produced.
-// Language of the movie.
-// Plot of the movie.
-// Actors in the movie.
-// 
-// If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+    
+    // bulid the movie parameter for search based on the user input passed into the function
+    movie = movie.replace(" ", "+");
+
+    // build the OMDB API quey with the movie specified  (Activity 17-OMDB-Axios)
+    var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
+
+    // create a request with axios to the queryUrl
+    axios.get(queryUrl)
+        
+    // If the request with axios is successful
+    .then( function(response) {
+        // Title of the movie.
+        console.log("Title:  " + response.data.Title);
+        // Year the movie came out.
+        console.log("Released Year:  " + response.data.Released.substring(7));
+        // IMDB Rating of the movie
+        console.log("IMDB Rating:  " + response.data.imdbRating);
+        // Rotten Tomatoes Rating of the movie.
+        console.log("Rotten Tomatoes Rating:  " + findRatings(response.data.Ratings));
+        // Country where the movie was produced.
+        console.log("Country:  " + response.data.Country);
+        // Language of the movie.
+        console.log("Language:  " + response.data.Language);
+        // Plot of the movie.
+        console.log("Plot:  " + response.data.Plot);
+        // Actors in the movie.
+        console.log("Actors:  " + response.data.Actors);
+    })
+    // If the request with axios is unsuccessful
+    .catch(function(error) {
+        console.log("Error in call to OMDB:  " + error);
+    });
 
 };
+// --------------------------------------------------------------------------------------
+//  end of movieThis() function 
+// --------------------------------------------------------------------------------------
 
 function readRandom(fname) {
 // do-what-it-says
@@ -88,3 +130,35 @@ function readRandom(fname) {
 // Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
 
 };
+
+// --------------------------------------------------------------------------------------
+//  function to sort through the Ratings Array returned by OMDB to get a specific one
+// 
+//  Parameter values:
+// 
+//  array - the ratings array from the response
+//  key - the object key to search for (default = 'Source')
+//  value - the value of the key to be retrieved (efault = 'Rotten Tomatoes')
+// --------------------------------------------------------------------------------------
+function findRatings(array, key='Source', value='Rotten Tomatoes') {
+
+    // iterate over the passed in array
+    for (var i = 0; i < array.length; i++) {
+
+        // see if the object key ("Source") is equal to the search string
+        if (array[i][key] === value) {
+
+            // return the value from the key "Value" field
+            return array[i]["Value"];
+
+        }
+
+    }
+
+    // if the requested Ratings are not found
+    return null;
+
+};
+// --------------------------------------------------------------------------------------
+//  end of findRatings() function 
+// --------------------------------------------------------------------------------------
