@@ -33,7 +33,7 @@ var action = inputString[2];
 // allow for multi-word inputs (Activity 23-GeocoeNPM)
 // take the inputstring from index 3 to the en and create a new array using the slice() method
 // take that resulting array and join it back as a string with a " " separating the words
-var target = inputString.slice(3).join(" "); 
+var target = capital_letter(inputString.slice(3).join(" ")); 
 
 // file name variable
 var logfile = 'log.txt';
@@ -202,7 +202,7 @@ function readRandom(fname) {
     console.log(dataArr);
 
     //  perform the action requested by the file
-    performAction(dataArr[0], dataArr[1])
+    performAction(dataArr[0], capital_letter(dataArr[1]));
   
   });
 
@@ -241,6 +241,26 @@ function findRatings(array, key='Source', value='Rotten Tomatoes') {
 };
 // --------------------------------------------------------------------------------------
 //  end of findRatings() function 
+// --------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------
+// function to capitalize the text before saving it.
+// Found this function on W3 schools - https://www.w3resource.com/javascript-exercises/javascript-basic-exercise-50.php
+// --------------------------------------------------------------------------------------
+function capital_letter(str) {
+    // separate the str parameter into pieces based on the 'space' separator
+    str = str.split(" ");
+
+    // traverse the string pieces and convert the first character of each word to Upper Case and then concatenate the rest of the string.
+    for (let i = 0, x = str.length; i < x; i++) {
+        str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+    }
+
+    // return the capitalize string put back together with the 'space' separator.
+    return str.join(" ");
+};
+// --------------------------------------------------------------------------------------
+// end of the capital_letter() function
 // --------------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------------
