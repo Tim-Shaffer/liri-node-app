@@ -98,6 +98,11 @@ else if (inputString) {
 function performAction(action, target) {
 
     switch(action) {
+
+        case "help":
+            displayHelp();
+            break;
+
         case "concert-this":
             concertThis(target);
             break;
@@ -125,6 +130,33 @@ function performAction(action, target) {
 // --------------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------------
+//  function to log all the capabilities of LIRI when help is requested
+// --------------------------------------------------------------------------------------
+function displayHelp() {
+
+    // Log all the things that LIRI can do to the console
+    console.log("\nLIRI can:");
+
+    console.log("* concert-this");
+
+    console.log("* spotify-this-song");
+
+    console.log("* movie-this");
+
+    console.log("* do-what-it-says\n");
+
+};
+// --------------------------------------------------------------------------------------
+//  end of displayHelp() function 
+// --------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------
+//  function to build and perform the API call to Bands In Town for a given artist 
+// 
+//  Parameter values:
+// 
+//  artist - the artist or group as provided (default = "Celine Dion")
+// 
 // --------------------------------------------------------------------------------------
 function concertThis(artist = "Celine Dion") {
 
@@ -200,6 +232,12 @@ function concertThis(artist = "Celine Dion") {
 // --------------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------------
+//  function to build and perform the API call to Spotify for a given song 
+// 
+//  Parameter values:
+// 
+//  song- the name of the song as provided (default = "The Sign")
+// 
 // --------------------------------------------------------------------------------------
 function spotifyThis(song = "The Sign") {
 
@@ -410,7 +448,7 @@ function findRatings(array, key='Source', value='Rotten Tomatoes') {
 // --------------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------------
-// function to capitalize the text before saving it.
+// function to capitalize some text for better display
 // Found this function on W3 schools - https://www.w3resource.com/javascript-exercises/javascript-basic-exercise-50.php
 // --------------------------------------------------------------------------------------
 function capital_letter(str) {
@@ -442,8 +480,8 @@ function logCommands(funcPerformed, target) {
 
     // start to format the logged message
     let msg = moment().format('L');         // start with the date in the 'MM/DD/YYYY' format
-    msg += ", " + moment().format('LTS');    // add the time in the 'HH:MM:SS AM" format
-    msg += " | " + funcPerformed + "  ";
+    msg += ", " + moment().format('LTS');   // add the time in the 'HH:MM:SS AM" format
+    msg += " | " + funcPerformed + "  ";    // add the functionality that was requested
 
     // the message is formatted but add an artist, song, or movie if it was provided
     if (target) {
