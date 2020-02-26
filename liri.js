@@ -2,7 +2,7 @@
 //  Testing parameters
 // 
 // node liri.js movie-this Frozen
-// node liri.js movie-this Avengers Endgame
+// node liri.js movie-this Charlie and the chocolate factory
 // 
 // --------------------------------------------------------------------------------------
 
@@ -29,6 +29,12 @@ var action = inputString[2];
 // take that resulting array and join it back as a string with a " " separating the words
 var target = inputString.slice(3).join(" "); 
 
+// file name variable
+var logfile = 'log.txt'
+
+// grab the fs package to handle read and append of the files
+var fs = require("fs");
+
 // perform an action based on what action was requested
 switch(action) {
     case "concert-this":
@@ -53,6 +59,10 @@ switch(action) {
 };
 
 function concertThis(artist = "Celine Dion") {
+
+    // Bonus -- log to a logfile
+    logCommands("Concert Search:", artist);
+
 // concert-this
 // node liri.js concert-this <artist/band name here>
 // 
@@ -66,6 +76,10 @@ function concertThis(artist = "Celine Dion") {
 };
 
 function spotifyThis(song = "The Sign") {
+
+    // Bonus -- log to a logfile
+    logCommands("Song Search:", song);
+
 // spotify-this-song
 // node liri.js spotify-this-song '<song name here>'
 // 
@@ -88,12 +102,16 @@ function spotifyThis(song = "The Sign") {
 // 
 // --------------------------------------------------------------------------------------
 function movieThis(movie = "Mr. Nobody") {
+
+    // Bonus -- log to a logfile
+    logCommands("Movie Search:", movie);
     
     // bulid the movie parameter for search based on the user input passed into the function
+    // according to the API website, the words in a Movie Title must be separated by "+" instead of spaces
     movie = movie.replace(" ", "+");
 
     // build the OMDB API quey with the movie specified  (Activity 17-OMDB-Axios)
-    var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
+    var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&type=movie&plot=short&apikey=trilogy";
 
     // create a request with axios to the queryUrl
     axios.get(queryUrl)
@@ -103,7 +121,8 @@ function movieThis(movie = "Mr. Nobody") {
         // Title of the movie.
         console.log("Title:  " + response.data.Title);
         // Year the movie came out.
-        console.log("Released Year:  " + response.data.Released.substring(7));
+        // console.log("Year:  " + response.data.Year);
+        console.log("Year:  " + response.data.Released.substring(7));
         // IMDB Rating of the movie
         console.log("IMDB Rating:  " + response.data.imdbRating);
         // Rotten Tomatoes Rating of the movie.
@@ -128,6 +147,10 @@ function movieThis(movie = "Mr. Nobody") {
 // --------------------------------------------------------------------------------------
 
 function readRandom(fname) {
+
+    // Bonus -- log to a logfile
+    logCommands("Do what it says!");
+
 // do-what-it-says
 // node liri.js do-what-it-says
 // 
@@ -165,4 +188,41 @@ function findRatings(array, key='Source', value='Rotten Tomatoes') {
 };
 // --------------------------------------------------------------------------------------
 //  end of findRatings() function 
+// --------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------
+// Bonus *****
+//  function to log a message to a logfile to keep track of the activities 
+// --------------------------------------------------------------------------------------
+function logCommands(funcPerformed, target) {
+
+    let msg = funcPerformed + "  ";
+
+    if (target) {
+        msg += target;
+    };
+
+    // add a line feed to the message
+    msg = msg + '\n';
+
+    // generate a log.txt - append to log.txt for all the commands being run
+    // Append the commands into the "log.txt" file.
+    // If the file doesn't exist, then it gets created on the fly.
+    fs.appendFile(logfile, msg, function(err) {
+
+        // If an error was experienced we will log it to the console
+        if (err) {
+        console.log(err);
+        }
+    
+        // If no error is experienced, we'll log the phrase "log.txt was updated!" to the console.
+        else {
+        console.log("*** log.txt was updated! ***");
+        }
+    
+    });
+
+};
+// --------------------------------------------------------------------------------------
+//  end of logCommands() function 
 // --------------------------------------------------------------------------------------
