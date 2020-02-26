@@ -3,9 +3,10 @@
 // 
 // node liri.js movie-this Frozen
 // node liri.js movie-this Charlie and the chocolate factory
-// 
-// node liri.js concert-this Third Eye Blind
-// node liri.js concert-this Paul McCartney
+//
+// node liri.js concert-this Adele 
+// node liri.js concert-this paul mccartney
+// node liri.js concert-this third eye blind
 // 
 // node liri.js spotify-this-song '<song name here>'
 // 
