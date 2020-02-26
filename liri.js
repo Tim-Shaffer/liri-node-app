@@ -131,6 +131,7 @@ function concertThis(artist = "Celine Dion") {
             location = event[i].venue.city + ", " + event[i].venue.region + " - " + response.data[i].venue.country;
             // Date of the Event (use moment to format this as "MM/DD/YYYY")
             eventDT = event[i].datetime;
+            eventDT = moment(eventDT).format('L');
 
             console.log(location + " at " + venue + " on " + eventDT);
         };
@@ -187,8 +188,8 @@ function movieThis(movie = "Mr. Nobody") {
         // Title of the movie.
         console.log("Title:  " + response.data.Title);
         // Year the movie came out.
-        // console.log("Year:  " + response.data.Year);
-        console.log("Year:  " + response.data.Released.substring(7));
+        console.log("Year:  " + response.data.Year);
+        // console.log("Year:  " + response.data.Released.substring(7));
         // IMDB Rating of the movie
         console.log("IMDB Rating:  " + response.data.imdbRating);
         // Rotten Tomatoes Rating of the movie.
