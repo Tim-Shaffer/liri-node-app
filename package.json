@@ -1,0 +1,24 @@
+{
+  "name": "liri-node-app",
+  "version": "1.0.0",
+  "description": "Node.js App Language Interpretation and Recognition Interface",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tim-Shaffer/liri-node-app.git"
+  },
+  "keywords": [],
+  "author": "Tim Shaffer",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "node-spotify-api": "^1.1.1"
+  }
+  "bugs": {
+    "url": "https://github.com/Tim-Shaffer/liri-node-app/issues"
+  },
+  "homepage": "https://github.com/Tim-Shaffer/liri-node-app#readme"
+}
