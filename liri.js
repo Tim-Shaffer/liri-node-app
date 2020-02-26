@@ -5,7 +5,7 @@
 //  1) with 1 name artist
 //  2) with multiple name artist
 //  3) with no information to be found
-// node liri.js concert-this Adele 
+// node liri.js concert-this kiss
 // node liri.js concert-this third eye blind
 // node liri.js concert-this rofo audio
 // 
@@ -71,11 +71,18 @@ var fs = require("fs");
 
 // call the performAction() function if arguments were passed - always since arguments inclued "node" and "liri.js"
 if (action && target) {
+
     target = capital_letter(target);
     performAction(action, target);
-} else if (action) {
+
+} 
+else if (action) {
+
     performAction(action);
-} else if (inputString) {
+
+} 
+else if (inputString) {
+
     performAction();
 } ;
 
@@ -104,12 +111,11 @@ function performAction(action, target) {
             break;
 
         case "do-what-it-says":
-            console.log("Read the file");
             readRandom(randomFile)
             break;
 
         default:
-            console.log('No Action To Take!');
+            console.log('No Action Provided To Take!');
             break;
     };
 
@@ -123,7 +129,7 @@ function performAction(action, target) {
 function concertThis(artist = "Celine Dion") {
 
     // Bonus -- log to a logfile
-    // logCommands("Concert Search:", artist);
+    logCommands("Concert Search:", artist);
 
     // bulid the artist parameter for search based on the user input passed into the function
     // according to the API website, the words in an Artist Name must be separated by "%20" instead of spaces
@@ -153,18 +159,29 @@ function concertThis(artist = "Celine Dion") {
 
             // log the event information
             for (let i=0; i < event.length; i++) {
+                
                 // Name of the venue
                 venue = event[i].venue.name;
+                
                 // Venue location
-                location = event[i].venue.city + ", " + event[i].venue.region + " - " + response.data[i].venue.country;
+                location = event[i].venue.city; 
+                
+                if (event[i].venue.region) {
+                    location += ", " + event[i].venue.region;
+                };
+                
+                location += " - " + response.data[i].venue.country;
+
                 // Date of the Event (use moment to format this as "MM/DD/YYYY")
                 eventDT = event[i].datetime;
                 eventDT = moment(eventDT).format('L');
 
                 console.log(location + " at " + venue + " on " + eventDT);
+
             };
 
         } else {
+
             // log the result header
             console.log("No Upcoming concerts for " + artist + " were found.");   
         }
@@ -172,7 +189,9 @@ function concertThis(artist = "Celine Dion") {
     })
     // If the request with axios is unsuccessful
     .catch(function(error) {
+
         console.log("Error in call to OMDB:  " + error);
+
     });
 
 };
@@ -185,7 +204,7 @@ function concertThis(artist = "Celine Dion") {
 function spotifyThis(song = "The Sign") {
 
     // Bonus -- log to a logfile
-    // logCommands("Song Search:", song);
+    logCommands("Song Search:", song);
 
     // local variables to make gathering the data easier
     var track = [];
@@ -197,7 +216,9 @@ function spotifyThis(song = "The Sign") {
     spotify.search({ type: 'track', query: song }, function(err, data) {
         
         if (err) {
+
           return console.log('Error occurred in spotify process: ' + err);
+
         }
        
         // store the resulting list in an array
@@ -246,8 +267,10 @@ function spotifyThis(song = "The Sign") {
             };
 
         } else {
+
             // log the result header
-            console.log("No Song information was found for " + song + ".");   
+            console.log("No Song information was found for " + song + ".");  
+
         }
         
       });
@@ -268,7 +291,7 @@ function spotifyThis(song = "The Sign") {
 function movieThis(movie = "Mr. Nobody") {
 
     // Bonus -- log to a logfile
-    // logCommands("Movie Search:", movie);
+    logCommands("Movie Search:", movie);
     
     // bulid the movie parameter for search based on the user input passed into the function
     // according to the API website, the words in a Movie Title must be separated by "+" instead of spaces
@@ -282,27 +305,39 @@ function movieThis(movie = "Mr. Nobody") {
         
     // If the request with axios is successful
     .then( function(response) {
+
         // Title of the movie.
         console.log("Title:  " + response.data.Title);
+
         // Year the movie came out.
         console.log("Year:  " + response.data.Year);
         // console.log("Year:  " + response.data.Released.substring(7));
+
         // IMDB Rating of the movie
         console.log("IMDB Rating:  " + response.data.imdbRating);
+
         // Rotten Tomatoes Rating of the movie.
         console.log("Rotten Tomatoes Rating:  " + findRatings(response.data.Ratings));
+
         // Country where the movie was produced.
         console.log("Country:  " + response.data.Country);
+
         // Language of the movie.
         console.log("Language:  " + response.data.Language);
+
         // Plot of the movie.
         console.log("Plot:  " + response.data.Plot);
+
         // Actors in the movie.
         console.log("Actors:  " + response.data.Actors);
+
     })
+
     // If the request with axios is unsuccessful
     .catch(function(error) {
+
         console.log("Error in call to OMDB:  " + error);
+
     });
 
 };
@@ -317,24 +352,20 @@ function movieThis(movie = "Mr. Nobody") {
 function readRandom(fname) {
 
     // Bonus -- log to a logfile
-    // logCommands("Do what it says!");
+    logCommands("Do what it says!");
 
     // read the random file and store the contents in "data"
     fs.readFile(randomFile, "utf8", function(error, data) {
 
     // If the code experiences any errors it will log the error to the console.
     if (error) {
+
       return console.log(error);
+
     }
-  
-    // We will then print the contents of data
-    console.log(data);
   
     // Then split it by commas (to make it more readable)  - separates values at the comma
     var dataArr = data.split(",");
-  
-    // We will then re-display the content as an array for later use.
-    // console.log(dataArr);
 
     //  perform the action requested by the file
     performAction(dataArr[0], capital_letter(dataArr[1]));
@@ -383,16 +414,20 @@ function findRatings(array, key='Source', value='Rotten Tomatoes') {
 // Found this function on W3 schools - https://www.w3resource.com/javascript-exercises/javascript-basic-exercise-50.php
 // --------------------------------------------------------------------------------------
 function capital_letter(str) {
+
     // separate the str parameter into pieces based on the 'space' separator
     str = str.split(" ");
 
     // traverse the string pieces and convert the first character of each word to Upper Case and then concatenate the rest of the string.
     for (let i = 0, x = str.length; i < x; i++) {
+
         str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+
     }
 
     // return the capitalize string put back together with the 'space' separator.
     return str.join(" ");
+    
 };
 // --------------------------------------------------------------------------------------
 // end of the capital_letter() function
@@ -405,8 +440,12 @@ function capital_letter(str) {
 // --------------------------------------------------------------------------------------
 function logCommands(funcPerformed, target) {
 
-    let msg = funcPerformed + "  ";
+    // start to format the logged message
+    let msg = moment().format('L');         // start with the date in the 'MM/DD/YYYY' format
+    msg += ", " + moment().format('LTS');    // add the time in the 'HH:MM:SS AM" format
+    msg += " | " + funcPerformed + "  ";
 
+    // the message is formatted but add an artist, song, or movie if it was provided
     if (target) {
         msg += target;
     };
