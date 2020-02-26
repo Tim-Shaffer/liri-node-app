@@ -503,7 +503,7 @@ function logCommands(funcPerformed, target) {
     
         // If no error is experienced, we'll log the phrase "log.txt was updated!" to the console.
         else {
-        console.log("*** log.txt was updated! ***");
+        console.log("\n*** log.txt was updated! ***");
         }
     
     });
