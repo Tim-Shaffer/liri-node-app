@@ -4,7 +4,7 @@
 // node liri.js movie-this Frozen
 // node liri.js movie-this Charlie and the chocolate factory
 // 
-// node liri.js concert-this Adele
+// node liri.js concert-this Third Eye Blind
 // node liri.js concert-this Paul McCartney
 // 
 // node liri.js spotify-this-song '<song name here>'
@@ -116,20 +116,21 @@ function concertThis(artist = "Celine Dion") {
         
     // If the request with axios is successful
     .then( function(response) {
-        // console.log(response.data);
 
         event = response.data;
+        // console.log(event);
 
         for (let i=0; i < event.length; i++) {
             // Name of the venue
             venue = event[i].venue.name;
             // Venue location
-            location = event[i].venue.city + ", " + response.data[i].venue.country;
+            location = event[i].venue.city + ", " + event[i].venue.region + " - " + response.data[i].venue.country;
             // Date of the Event (use moment to format this as "MM/DD/YYYY")
             eventDT = event[i].datetime;
 
-            console.log(location + " at " + venue + " " + eventDT);
-        }
+            console.log(location + " at " + venue + " on " + eventDT);
+        };
+
     })
     // If the request with axios is unsuccessful
     .catch(function(error) {
