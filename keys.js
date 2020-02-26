@@ -1,4 +1,5 @@
-console.log('this is loaded');
+// Verify that the keys get loaded during testing
+// console.log('this is loaded');
 
 exports.spotify = {
   id: process.env.SPOTIFY_ID,

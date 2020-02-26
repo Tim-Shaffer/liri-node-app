@@ -1,24 +1,43 @@
 // --------------------------------------------------------------------------------------
 //  Testing parameters
 // 
-// node liri.js movie-this Frozen
-// node liri.js movie-this Charlie and the chocolate factory
-//
+//  concert-this
+//  1) with 1 name artist
+//  2) with multiple name artist
+//  3) with no information to be found
 // node liri.js concert-this Adele 
-// node liri.js concert-this paul mccartney
 // node liri.js concert-this third eye blind
+// node liri.js concert-this rofo audio
 // 
-// node liri.js spotify-this-song '<song name here>'
 // 
+//  spotify-this-song
+//  1) with 1 name song
+//  2) with multiple name songs
+//  3) with no song provided
+// node liri.js spotify-this-song hello
+// node liri.js spotify-this-song yellow submarine
+// node liri.js spotify-this-song
+// 
+//
+//  movie-this
+//  1) with 1 name artist
+//  2) with multiple name artist
+//  3) with no movie provided
+// node liri.js movie-this Frozengit 
+// node liri.js movie-this Charlie and the chocolate factory
+// node liri.js movie-this
+// 
+// 
+//  do-what-it says (Modify the random.txt with the above listed test parameters)
 // node liri.js do-what-it-says
 // 
 // --------------------------------------------------------------------------------------
 
-// code to read and set any environment variables with the dotenv package 
-// require("dotenv").config();
+// code to read and set any environment variables with the .env package 
+require("dotenv").config();
 
 // code required to import the keys.js file and store it in a variable 
-// var keys = require("./keys.js");
+var keys = require("./keys.js");
 
 // Grab the axios package...
 var axios = require("axios");
@@ -26,8 +45,11 @@ var axios = require("axios");
 // Grab the moment package...
 var moment = require("moment");
 
+// Grab the Spotify API package
+var Spotify = require('node-spotify-api');
+
 // access Spotify keys information
-// var spotify = new Spotify(keys.spotify);
+var spotify = new Spotify(keys.spotify);
 
 // Takes in all of the command line arguments
 var inputString = process.argv;
@@ -38,7 +60,7 @@ var action = inputString[2];
 // allow for multi-word inputs (Activity 23-GeocoeNPM)
 // take the inputstring from index 3 to the en and create a new array using the slice() method
 // take that resulting array and join it back as a string with a " " separating the words
-var target = capital_letter(inputString.slice(3).join(" ")); 
+var target = inputString.slice(3).join(" "); 
 
 // file name variable
 var logfile = 'log.txt';
@@ -49,6 +71,7 @@ var fs = require("fs");
 
 // call the performAction() function if arguments were passed - always since arguments inclued "node" and "liri.js"
 if (action && target) {
+    target = capital_letter(target);
     performAction(action, target);
 } else if (action) {
     performAction(action);
@@ -81,6 +104,7 @@ function performAction(action, target) {
             break;
 
         case "do-what-it-says":
+            console.log("Read the file");
             readRandom(randomFile)
             break;
 
@@ -94,20 +118,19 @@ function performAction(action, target) {
 //  end of performAction() function 
 // --------------------------------------------------------------------------------------
 
+// --------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------
 function concertThis(artist = "Celine Dion") {
 
     // Bonus -- log to a logfile
     // logCommands("Concert Search:", artist);
 
-    // log the result header
-    console.log("Upcoming concerts for " + artist + ":");
-
     // bulid the artist parameter for search based on the user input passed into the function
     // according to the API website, the words in an Artist Name must be separated by "%20" instead of spaces
-    artist = artist.replace(" ", "%20");
+    var artistSrch = artist.replace(" ", "%20");
 
     // build the OMDB API quey with the movie specified  (Activity 17-OMDB-Axios)
-    var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+    var queryUrl = "https://rest.bandsintown.com/artists/" + artistSrch + "/events?app_id=codingbootcamp";
 
     // establish variables for further processing
     var venue;
@@ -124,17 +147,27 @@ function concertThis(artist = "Celine Dion") {
         event = response.data;
         // console.log(event);
 
-        for (let i=0; i < event.length; i++) {
-            // Name of the venue
-            venue = event[i].venue.name;
-            // Venue location
-            location = event[i].venue.city + ", " + event[i].venue.region + " - " + response.data[i].venue.country;
-            // Date of the Event (use moment to format this as "MM/DD/YYYY")
-            eventDT = event[i].datetime;
-            eventDT = moment(eventDT).format('L');
+        if (event.length > 0) {
+            // log the result header
+            console.log("Upcoming concerts for " + artist + ":");
 
-            console.log(location + " at " + venue + " on " + eventDT);
-        };
+            // log the event information
+            for (let i=0; i < event.length; i++) {
+                // Name of the venue
+                venue = event[i].venue.name;
+                // Venue location
+                location = event[i].venue.city + ", " + event[i].venue.region + " - " + response.data[i].venue.country;
+                // Date of the Event (use moment to format this as "MM/DD/YYYY")
+                eventDT = event[i].datetime;
+                eventDT = moment(eventDT).format('L');
+
+                console.log(location + " at " + venue + " on " + eventDT);
+            };
+
+        } else {
+            // log the result header
+            console.log("No Upcoming concerts for " + artist + " were found.");   
+        }
 
     })
     // If the request with axios is unsuccessful
@@ -143,22 +176,86 @@ function concertThis(artist = "Celine Dion") {
     });
 
 };
+// --------------------------------------------------------------------------------------
+//  end of concertThis() function 
+// --------------------------------------------------------------------------------------
 
+// --------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------
 function spotifyThis(song = "The Sign") {
 
     // Bonus -- log to a logfile
-    logCommands("Song Search:", song);
+    // logCommands("Song Search:", song);
 
-// 
-// This will show the following information about the song in your terminal/bash window
-// Artist(s)
-// The song's name
-// A preview link of the song from Spotify
-// The album that the song is from
-// 
-// If no song is provided then your program will default to "The Sign" by Ace of Base.
+    // local variables to make gathering the data easier
+    var track = [];
+    var artistArray = [];
+    var artist;
+
+    // Testing to just return 2
+    // spotify.search({ type: 'track', query: song, limit: 1 }, function(err, data) {
+    spotify.search({ type: 'track', query: song }, function(err, data) {
+        
+        if (err) {
+          return console.log('Error occurred in spotify process: ' + err);
+        }
+       
+        // store the resulting list in an array
+        track = data.tracks.items;
+
+        // make sure there is at least 1 entry
+        if (track.length > 0) {
+
+            // log the track information
+            for (let i=0; i < track.length; i++) {
+
+                // Log the counter which is i + 1
+                console.log(i + 1);
+
+                // Artist(s) - held in an array
+                artistArray = track[i].artists;
+                
+                // grab the first entry in the array
+                artist = artistArray[0].name;
+
+                // if there are more than 1 artist on the album 
+                if (artistArray.length > 1) {
+
+                    // loop through the artists to string together with a comma separator
+                    for (let i=1; i < artistArray.length; i++) { 
+                        artist += ", " + artistArray[i].name;
+                    };
+
+                };
+
+                // log the artist information
+                console.log("Artist(s): " + artist);
+
+                // The song's name
+                console.log("Song Name: " + track[i].name);
+
+                // A preview link of the song from Spotify
+                console.log("Preview Link: " + track[i].preview_url);
+
+                // The album that the song is from
+                console.log("Album: " + track[i].album.name);
+
+                // spaceholder to separate the list more clearly
+                console.log("-----------------------------------------------");
+
+            };
+
+        } else {
+            // log the result header
+            console.log("No Song information was found for " + song + ".");   
+        }
+        
+      });
 
 };
+// --------------------------------------------------------------------------------------
+//  end of spotifyThis() function 
+// --------------------------------------------------------------------------------------
 
 // --------------------------------------------------------------------------------------
 //  function to build and perform the API call to OMDB for a given movie 
@@ -171,7 +268,7 @@ function spotifyThis(song = "The Sign") {
 function movieThis(movie = "Mr. Nobody") {
 
     // Bonus -- log to a logfile
-    logCommands("Movie Search:", movie);
+    // logCommands("Movie Search:", movie);
     
     // bulid the movie parameter for search based on the user input passed into the function
     // according to the API website, the words in a Movie Title must be separated by "+" instead of spaces
@@ -220,8 +317,7 @@ function movieThis(movie = "Mr. Nobody") {
 function readRandom(fname) {
 
     // Bonus -- log to a logfile
-    logCommands("Do what it says!");
-// Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
+    // logCommands("Do what it says!");
 
     // read the random file and store the contents in "data"
     fs.readFile(randomFile, "utf8", function(error, data) {
@@ -238,7 +334,7 @@ function readRandom(fname) {
     var dataArr = data.split(",");
   
     // We will then re-display the content as an array for later use.
-    console.log(dataArr);
+    // console.log(dataArr);
 
     //  perform the action requested by the file
     performAction(dataArr[0], capital_letter(dataArr[1]));
