@@ -51,6 +51,13 @@ var Spotify = require('node-spotify-api');
 // access Spotify keys information
 var spotify = new Spotify(keys.spotify);
 
+// file name variable
+var logfile = 'log.txt';
+var randomFile = 'random.txt';
+
+// grab the fs package to handle read and append of the files
+var fs = require("fs");
+
 // Takes in all of the command line arguments
 var inputString = process.argv;
 
@@ -61,13 +68,6 @@ var action = inputString[2];
 // take the inputstring from index 3 to the en and create a new array using the slice() method
 // take that resulting array and join it back as a string with a " " separating the words
 var target = inputString.slice(3).join(" "); 
-
-// file name variable
-var logfile = 'log.txt';
-var randomFile = 'random.txt';
-
-// grab the fs package to handle read and append of the files
-var fs = require("fs");
 
 // call the performAction() function if arguments were passed - always since arguments inclued "node" and "liri.js"
 if (action && target) {

@@ -62,6 +62,36 @@ LIRI will take in a list of parameters based on the CLI in the form
 1.  The remaining inputs are combined to populate the *name* information for that action
     * ie. third eye blind - treated as 3 separate inputs but will be combined into one string as 'Third Eye Blind"
 
+## Program Organization
+
+The program will first declare any necessary variables and make sure any required packages are pulled in.
+
+    // code to read and set any environment variables with the .env package 
+    require("dotenv").config();
+
+    // code required to import the keys.js file and store it in a variable 
+    var keys = require("./keys.js");
+
+    // Grab the axios package...
+    var axios = require("axios");
+
+    // Grab the moment package...
+    var moment = require("moment");
+
+    // Grab the Spotify API package
+    var Spotify = require('node-spotify-api');
+
+Declaring the inputString directs the program to gather any relevant paramters
+
+    // Takes in all of the command line arguments
+    var inputString = process.argv;
+
+The `performAction()` function drives the program based on the provided parameters.
+
+Functions are called for each of the possible actions `concertThis()`, `spotifyThis()`, `movieThis()`, and `readRandom()`.  
+If no action or **help** is declared, the `displayHelp()` function is called.
+
+
 # Examples
 
 1.  *node liri.js*
