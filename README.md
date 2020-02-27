@@ -81,7 +81,7 @@ The program will first declare any necessary variables and make sure any require
     // Grab the Spotify API package
     var Spotify = require('node-spotify-api');
 
-Declaring the inputString directs the program to gather any relevant paramters
+Declaring the inputString directs the program to gather any relevant parameters
 
     // Takes in all of the command line arguments
     var inputString = process.argv;
