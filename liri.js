@@ -23,7 +23,7 @@
 //  1) with 1 name artist
 //  2) with multiple name artist
 //  3) with no movie provided
-// node liri.js movie-this Frozengit 
+// node liri.js movie-this Frozen 
 // node liri.js movie-this Charlie and the chocolate factory
 // node liri.js movie-this
 // 
@@ -120,7 +120,9 @@ function performAction(action, target) {
             break;
 
         default:
-            console.log('No Action Provided To Take!');
+            console.log('\nNo Action Provided To Take!');
+            console.log('\nHere is some help: ');
+            performAction("help");
             break;
     };
 
@@ -135,7 +137,7 @@ function performAction(action, target) {
 function displayHelp() {
 
     // Log all the things that LIRI can do to the console
-    console.log("\nLIRI can:");
+    console.log("\nLIRI can: \n");
 
     console.log("* concert-this");
 
@@ -184,7 +186,7 @@ function concertThis(artist = "Celine Dion") {
 
         if (event.length > 0) {
             // log the result header
-            console.log("Upcoming concerts for " + artist + ":");
+            console.log("\nUpcoming concerts for " + artist + ": \n");
 
             // log the event information
             for (let i=0; i < event.length; i++) {
@@ -266,6 +268,10 @@ function spotifyThis(song = "The Sign") {
             for (let i=0; i < track.length; i++) {
 
                 // Log the counter which is i + 1
+                if (i === 0) {
+                    console.log("\n")
+                };
+
                 console.log(i + 1);
 
                 // Artist(s) - held in an array
@@ -340,6 +346,9 @@ function movieThis(movie = "Mr. Nobody") {
         
     // If the request with axios is successful
     .then( function(response) {
+
+        // Spacing 
+        console.log("\n");
 
         // Title of the movie.
         console.log("Title:  " + response.data.Title);
