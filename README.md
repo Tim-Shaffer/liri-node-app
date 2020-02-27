@@ -44,8 +44,8 @@ Node.js Language Interpretation and Recognition Interface
 
 * help - will provide the above list of valid commands 
 
-# Functionality
-LIRI will take in a list of parameters based on the CLI in the form 
+# Instuctions 
+LIRI will take in a list of parameters based on the CLI in the form - 
 
 > node liri.js concert-this [artist/band name here]
 >
