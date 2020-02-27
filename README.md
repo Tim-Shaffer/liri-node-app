@@ -116,3 +116,6 @@ If no action or **help** is declared, the `displayHelp()` function is called.
 
     ![Screenshot for do-what-it-says](/testing/screenshots/do-what-it-says.jpg)
 
+
+1. Video of the working app can be found here: https://drive.google.com/file/d/10U4ahEwWo8SFmaftQJ5TJ5AsAQu2LDgU/view?usp=sharing
+
