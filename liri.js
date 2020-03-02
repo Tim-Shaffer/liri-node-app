@@ -29,7 +29,7 @@
 // 
 // 
 //  do-what-it says (Modify the random.txt with the above listed test parameters)
-// node liri.js do-what-it-says
+// node liri.js do-what-it-says  (spotify-this-song,"I Want it That Way")
 // 
 // --------------------------------------------------------------------------------------
 
@@ -62,12 +62,17 @@ var fs = require("fs");
 var inputString = process.argv;
 
 // Parses the command line arguments to capture the first argument
-var action = inputString[2];
+// made sure to convert to lower for comparison later
+if (inputString.length > 2) {
+    var action = inputString[2].toLowerCase();
+};
 
 // allow for multi-word inputs (Activity 23-GeocoeNPM)
 // take the inputstring from index 3 to the en and create a new array using the slice() method
 // take that resulting array and join it back as a string with a " " separating the words
-var target = inputString.slice(3).join(" "); 
+if (inputString.length > 3) {
+    var target = inputString.slice(3).join(" "); 
+};
 
 // call the performAction() function if arguments were passed - always since arguments inclued "node" and "liri.js"
 if (action && target) {
@@ -217,14 +222,17 @@ function concertThis(artist = "Celine Dion") {
         } else {
 
             // log the result header
-            console.log("No Upcoming concerts for " + artist + " were found.");   
+            console.log("No Upcoming concerts for " + artist + " were found.");  
+            
+            // Bonus -- log to a logfile
+            logCommands("Concert Search:", artist);
         }
 
     })
     // If the request with axios is unsuccessful
     .catch(function(error) {
 
-        console.log("Error in call to OMDB:  " + error);
+        console.log("Error in call to Bands in Town:  " + error);
 
     });
 
@@ -315,6 +323,9 @@ function spotifyThis(song = "The Sign") {
             // log the result header
             console.log("No Song information was found for " + song + ".");  
 
+            // Bonus -- log to a logfile 
+            logCommands("Song Search:", song);
+
         }
         
       });
@@ -347,36 +358,51 @@ function movieThis(movie = "Mr. Nobody") {
     // If the request with axios is successful
     .then( function(response) {
 
-        // Spacing 
-        console.log("\n");
+        // make sure there is at least 1 entry
+        if (response.data.Response === "True") {
 
-        // Title of the movie.
-        console.log("Title:  " + response.data.Title);
+            // Spacing 
+            console.log("\n");
 
-        // Year the movie came out.
-        console.log("Year:  " + response.data.Year);
-        // console.log("Year:  " + response.data.Released.substring(7));
+            // Title of the movie.
+            console.log("Title:  " + response.data.Title);
 
-        // IMDB Rating of the movie
-        console.log("IMDB Rating:  " + response.data.imdbRating);
+            // Year the movie came out.
+            console.log("Year:  " + response.data.Year);
+            // console.log("Year:  " + response.data.Released.substring(7));
 
-        // Rotten Tomatoes Rating of the movie.
-        console.log("Rotten Tomatoes Rating:  " + findRatings(response.data.Ratings));
+            // IMDB Rating of the movie
+            console.log("IMDB Rating:  " + response.data.imdbRating);
 
-        // Country where the movie was produced.
-        console.log("Country:  " + response.data.Country);
+            // Rotten Tomatoes Rating of the movie.
+            console.log("Rotten Tomatoes Rating:  " + findRatings(response.data.Ratings));
 
-        // Language of the movie.
-        console.log("Language:  " + response.data.Language);
+            // Country where the movie was produced.
+            console.log("Country:  " + response.data.Country);
 
-        // Plot of the movie.
-        console.log("Plot:  " + response.data.Plot);
+            // Language of the movie.
+            console.log("Language:  " + response.data.Language);
 
-        // Actors in the movie.
-        console.log("Actors:  " + response.data.Actors);
+            // Plot of the movie.
+            console.log("Plot:  " + response.data.Plot);
 
-        // Bonus -- log to a logfile
-        logCommands("Movie Search:", movie);
+            // Actors in the movie.
+            console.log("Actors:  " + response.data.Actors);
+
+            // Bonus -- log to a logfile
+            logCommands("Movie Search:", movie);
+
+        } else {
+
+            // log the result header
+            console.log("No Movie information was found for " + movie + ".");  
+
+            // Bonus -- log to a logfile
+            logCommands("Movie Search:", movie);
+
+        }
+
+
 
     })
 
@@ -415,7 +441,13 @@ function readRandom(fname) {
     logCommands("Do what it says!");
 
     //  perform the action requested by the file
-    performAction(dataArr[0], capital_letter(dataArr[1]));
+    if (dataArr.length > 1) {
+        // need to remove the quotation marks around the target information in the file.
+        performAction(dataArr[0], capital_letter(dataArr[1].replace('"', '').replace('"', '')));
+    } else {
+        performAction(dataArr[0]);   
+    }
+
   
   });
 
