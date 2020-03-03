@@ -117,5 +117,5 @@ If no action or **help** is declared, the `displayHelp()` function is called.
     ![Screenshot for do-what-it-says](/testing/screenshots/do-what-it-says.jpg)
 
 
-1. Video of the working app can be found here: https://youtu.be/e9y0UhRGu-A
+1. Video of the working app can be found here: https://youtu.be/R86RKsGpOoc
 
