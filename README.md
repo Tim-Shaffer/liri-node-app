@@ -44,6 +44,17 @@ Node.js Language Interpretation and Recognition Interface
 
 * help - will provide the above list of valid commands 
 
+# Getting started
+
+*   Fork the the repository into your own space on GitHub
+*   Clone your forked repository into your own workspace.
+*   Within the terminal and the folder containing the repository, you must install the required node package dependencies defined in the **package.json** file into your folder.  Trigger the package install  
+
+>
+> npm i 
+> 
+
+
 # Instuctions 
 LIRI will take in a list of parameters based on the CLI in the form - 
 
